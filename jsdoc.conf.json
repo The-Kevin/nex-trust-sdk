@@ -1,0 +1,54 @@
+{
+  "source": {
+    "include": [
+      "./src/",
+      "./README.md"
+    ],
+    "includePattern": "\\.(js|jsx)$",
+    "excludePattern": "(node_modules/|tests/|examples/)"
+  },
+  "opts": {
+    "destination": "./docs/",
+    "recurse": true,
+    "template": "node_modules/docdash"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "docdash": {
+    "static": true,
+    "sort": true,
+    "disqus": "",
+    "openGraph": {
+      "title": "NextTrust SDK Documentation",
+      "type": "website",
+      "image": "",
+      "site_name": "NextTrust SDK",
+      "url": ""
+    },
+    "meta": {
+      "title": "NextTrust SDK Documentation",
+      "description": "SDK leve para verificação de identidade e análise de confiança",
+      "keyword": "identity, verification, trust, security, fingerprinting, behavioral analysis"
+    },
+    "search": true,
+    "collapse": false,
+    "wrap": true,
+    "typedefs": true,
+    "navLevel": 1,
+    "private": false,
+    "removeQuotes": "none",
+    "menu": {
+      "Github": {
+        "href": "https://github.com/nextrust/nex-trust-sdk",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "repository"
+      }
+    }
+  }
+}

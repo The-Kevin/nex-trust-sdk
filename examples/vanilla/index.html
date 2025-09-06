@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextTrust SDK - Exemplo Vanilla JS</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background: #0056b3;
+        }
+
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .button.success {
+            background: #28a745;
+        }
+
+        .button.success:hover {
+            background: #1e7e34;
+        }
+
+        .button.danger {
+            background: #dc3545;
+        }
+
+        .button.danger:hover {
+            background: #c82333;
+        }
+
+        .button.warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .button.warning:hover {
+            background: #e0a800;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 16px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            padding: 2px 0;
+        }
+
+        .log-entry.info {
+            color: #0c5460;
+        }
+
+        .log-entry.warn {
+            color: #856404;
+        }
+
+        .log-entry.error {
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>NextTrust SDK - Exemplo Vanilla JS</h1>
+            <p>Demonstração da integração do NextTrust SDK com JavaScript vanilla</p>
+        </div>
+
+        <div class="grid">
+            <!-- Configuração -->
+            <div class="card">
+                <h2>Configuração do SDK</h2>
+                
+                <div class="form-group">
+                    <label for="apiUrl">URL da API:</label>
+                    <input type="text" id="apiUrl" value="http://localhost:3000">
+                </div>
+
+                <div class="form-group">
+                    <label for="apiKey">Chave da API:</label>
+                    <input type="text" id="apiKey" value="test-api-key">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="enableBehavioralTracking" checked>
+                    <label for="enableBehavioralTracking">Habilitar rastreamento comportamental</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="enableFacialCapture">
+                    <label for="enableFacialCapture">Habilitar captura facial</label>
+                </div>
+
+                <button class="button" id="initBtn">Inicializar SDK</button>
+                <button class="button danger" id="destroyBtn" disabled>Destruir SDK</button>
+            </div>
+
+            <!-- Controles -->
+            <div class="card">
+                <h2>Controles</h2>
+                
+                <div id="sdkStatus" class="status error">
+                    <strong>SDK:</strong> Não inicializado
+                </div>
+
+                <div id="sessionStatus" class="status info hidden">
+                    <strong>Sessão:</strong> <span id="sessionId">-</span>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="includeFacial">
+                    <label for="includeFacial">Incluir verificação facial</label>
+                </div>
+
+                <button class="button" id="verifyBtn" disabled>Verificar Identidade</button>
+                <button class="button warning" id="updateSessionBtn" disabled>Atualizar Sessão</button>
+
+                <div id="errorStatus" class="status error hidden mt-20">
+                    <strong>Erro:</strong> <span id="errorMessage"></span>
+                </div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="card" id="resultCard" style="display: none;">
+                <h2>Resultado da Verificação</h2>
+                
+                <div id="decisionStatus" class="status">
+                    <strong>Decisão:</strong> <span id="decisionText">-</span>
+                </div>
+
+                <div class="status info">
+                    <strong>Score:</strong> <span id="scoreText">-</span>/100
+                </div>
+
+                <div class="status info">
+                    <strong>Sessão:</strong> <span id="resultSessionId">-</span>
+                </div>
+
+                <div class="status info">
+                    <strong>Tempo de processamento:</strong> <span id="processingTime">-</span>ms
+                </div>
+
+                <h3>Razões:</h3>
+                <ul id="reasonsList"></ul>
+
+                <h3>Dados Completos:</h3>
+                <div id="fullResult" class="result"></div>
+            </div>
+
+            <!-- Dados da Sessão -->
+            <div class="card" id="sessionCard" style="display: none;">
+                <h2>Dados da Sessão</h2>
+                
+                <h3>Fingerprint:</h3>
+                <div id="fingerprintData" class="result"></div>
+
+                <h3>Comportamental:</h3>
+                <div id="behavioralData" class="result"></div>
+            </div>
+        </div>
+
+        <!-- Log -->
+        <div class="card">
+            <h2>Log de Eventos</h2>
+            <div id="logContainer" class="log">
+                <div class="log-entry info">Aguardando inicialização do SDK...</div>
+            </div>
+            <button class="button" id="clearLogBtn">Limpar Log</button>
+        </div>
+    </div>
+
+    <!-- Simulação do SDK NextTrust -->
+    <script>
+        // Simulação do SDK NextTrust (em produção, seria carregado do CDN ou módulo)
+        class MockNextTrustSDK {
+            constructor() {
+                this.isInitialized = false;
+                this.sessionId = null;
+                this.config = null;
+            }
+
+            async init(config) {
+                this.log('Inicializando SDK com configuração:', config);
+                this.config = config;
+                this.sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                this.isInitialized = true;
+                this.log('SDK inicializado com sucesso. Sessão:', this.sessionId);
+                return true;
+            }
+
+            async verifyIdentity(options = {}) {
+                if (!this.isInitialized) {
+                    throw new Error('SDK não inicializado');
+                }
+
+                this.log('Iniciando verificação de identidade...', options);
+                
+                // Simula delay da API
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Simula resultado baseado nas opções
+                const score = Math.random() * 100;
+                let decision = 'review';
+                
+                if (score >= 80) decision = 'allow';
+                else if (score < 50) decision = 'deny';
+                
+                const result = {
+                    score: Math.round(score),
+                    decision,
+                    reasons: [
+                        'Análise de fingerprint concluída',
+                        'Dados comportamentais coletados',
+                        options.includeFacial ? 'Verificação facial realizada' : 'Verificação facial não solicitada'
+                    ],
+                    sessionId: this.sessionId,
+                    timestamp: new Date().toISOString(),
+                    processingTime: 1500 + Math.random() * 1000
+                };
+
+                this.log('Verificação concluída:', result);
+                return result;
+            }
+
+            getSessionData() {
+                if (!this.isInitialized) {
+                    return null;
+                }
+
+                return {
+                    sessionId: this.sessionId,
+                    fingerprint: {
+                        userAgent: navigator.userAgent,
+                        language: navigator.language,
+                        platform: navigator.platform,
+                        screenResolution: screen.width + 'x' + screen.height,
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        timestamp: Date.now()
+                    },
+                    behavioral: {
+                        totalEvents: Math.floor(Math.random() * 100),
+                        duration: Math.floor(Math.random() * 300000),
+                        eventCounts: {
+                            click: Math.floor(Math.random() * 20),
+                            scroll: Math.floor(Math.random() * 15),
+                            keystroke: Math.floor(Math.random() * 10)
+                        }
+                    }
+                };
+            }
+
+            destroy() {
+                this.log('Destruindo SDK...');
+                this.isInitialized = false;
+                this.sessionId = null;
+                this.config = null;
+            }
+
+            log(message, data = null) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry info';
+                logEntry.innerHTML = `[${timestamp}] ${message}`;
+                
+                if (data) {
+                    logEntry.innerHTML += '<br>' + JSON.stringify(data, null, 2);
+                }
+                
+                document.getElementById('logContainer').appendChild(logEntry);
+                document.getElementById('logContainer').scrollTop = document.getElementById('logContainer').scrollHeight;
+            }
+        }
+
+        // Instância global do SDK
+        let sdk = null;
+
+        // Elementos DOM
+        const elements = {
+            initBtn: document.getElementById('initBtn'),
+            destroyBtn: document.getElementById('destroyBtn'),
+            verifyBtn: document.getElementById('verifyBtn'),
+            updateSessionBtn: document.getElementById('updateSessionBtn'),
+            clearLogBtn: document.getElementById('clearLogBtn'),
+            sdkStatus: document.getElementById('sdkStatus'),
+            sessionStatus: document.getElementById('sessionStatus'),
+            sessionId: document.getElementById('sessionId'),
+            errorStatus: document.getElementById('errorStatus'),
+            errorMessage: document.getElementById('errorMessage'),
+            resultCard: document.getElementById('resultCard'),
+            decisionStatus: document.getElementById('decisionStatus'),
+            decisionText: document.getElementById('decisionText'),
+            scoreText: document.getElementById('scoreText'),
+            resultSessionId: document.getElementById('resultSessionId'),
+            processingTime: document.getElementById('processingTime'),
+            reasonsList: document.getElementById('reasonsList'),
+            fullResult: document.getElementById('fullResult'),
+            sessionCard: document.getElementById('sessionCard'),
+            fingerprintData: document.getElementById('fingerprintData'),
+            behavioralData: document.getElementById('behavioralData'),
+            logContainer: document.getElementById('logContainer')
+        };
+
+        // Funções utilitárias
+        function showError(message) {
+            elements.errorMessage.textContent = message;
+            elements.errorStatus.classList.remove('hidden');
+        }
+
+        function hideError() {
+            elements.errorStatus.classList.add('hidden');
+        }
+
+        function updateSDKStatus(initialized) {
+            if (initialized) {
+                elements.sdkStatus.className = 'status success';
+                elements.sdkStatus.innerHTML = '<strong>SDK:</strong> Inicializado';
+                elements.initBtn.disabled = true;
+                elements.destroyBtn.disabled = false;
+                elements.verifyBtn.disabled = false;
+                elements.updateSessionBtn.disabled = false;
+            } else {
+                elements.sdkStatus.className = 'status error';
+                elements.sdkStatus.innerHTML = '<strong>SDK:</strong> Não inicializado';
+                elements.initBtn.disabled = false;
+                elements.destroyBtn.disabled = true;
+                elements.verifyBtn.disabled = true;
+                elements.updateSessionBtn.disabled = true;
+            }
+        }
+
+        function updateSessionData() {
+            if (sdk && sdk.isInitialized) {
+                const sessionData = sdk.getSessionData();
+                if (sessionData) {
+                    elements.sessionId.textContent = sessionData.sessionId;
+                    elements.sessionStatus.classList.remove('hidden');
+                    
+                    elements.fingerprintData.textContent = JSON.stringify(sessionData.fingerprint, null, 2);
+                    elements.behavioralData.textContent = JSON.stringify(sessionData.behavioral, null, 2);
+                    elements.sessionCard.style.display = 'block';
+                }
+            } else {
+                elements.sessionStatus.classList.add('hidden');
+                elements.sessionCard.style.display = 'none';
+            }
+        }
+
+        function getDecisionColor(decision) {
+            switch (decision) {
+                case 'allow': return 'success';
+                case 'deny': return 'danger';
+                case 'review': return 'warning';
+                default: return 'info';
+            }
+        }
+
+        function getDecisionText(decision) {
+            switch (decision) {
+                case 'allow': return 'Permitir';
+                case 'deny': return 'Negar';
+                case 'review': return 'Revisar';
+                default: return 'Desconhecido';
+            }
+        }
+
+        // Event listeners
+        elements.initBtn.addEventListener('click', async () => {
+            try {
+                hideError();
+                
+                const config = {
+                    apiUrl: document.getElementById('apiUrl').value,
+                    apiKey: document.getElementById('apiKey').value,
+                    enableBehavioralTracking: document.getElementById('enableBehavioralTracking').checked,
+                    enableFacialCapture: document.getElementById('enableFacialCapture').checked
+                };
+
+                sdk = new MockNextTrustSDK();
+                await sdk.init(config);
+                
+                updateSDKStatus(true);
+                updateSessionData();
+                
+            } catch (error) {
+                showError(`Erro ao inicializar SDK: ${error.message}`);
+            }
+        });
+
+        elements.destroyBtn.addEventListener('click', () => {
+            if (sdk) {
+                sdk.destroy();
+                sdk = null;
+                updateSDKStatus(false);
+                updateSessionData();
+                elements.resultCard.style.display = 'none';
+            }
+        });
+
+        elements.verifyBtn.addEventListener('click', async () => {
+            if (!sdk || !sdk.isInitialized) {
+                showError('SDK não inicializado');
+                return;
+            }
+
+            try {
+                hideError();
+                elements.verifyBtn.disabled = true;
+                elements.verifyBtn.innerHTML = '<div class="loading"></div>Verificando...';
+                
+                const options = {
+                    includeFacial: document.getElementById('includeFacial').checked
+                };
+
+                const result = await sdk.verifyIdentity(options);
+                
+                // Atualiza interface com resultado
+                elements.decisionStatus.className = `status ${getDecisionColor(result.decision)}`;
+                elements.decisionText.textContent = getDecisionText(result.decision);
+                elements.scoreText.textContent = result.score;
+                elements.resultSessionId.textContent = result.sessionId;
+                elements.processingTime.textContent = Math.round(result.processingTime);
+                
+                // Lista de razões
+                elements.reasonsList.innerHTML = '';
+                result.reasons.forEach(reason => {
+                    const li = document.createElement('li');
+                    li.textContent = reason;
+                    elements.reasonsList.appendChild(li);
+                });
+                
+                // Dados completos
+                elements.fullResult.textContent = JSON.stringify(result, null, 2);
+                
+                elements.resultCard.style.display = 'block';
+                
+                // Atualiza dados da sessão
+                updateSessionData();
+                
+            } catch (error) {
+                showError(`Erro na verificação: ${error.message}`);
+            } finally {
+                elements.verifyBtn.disabled = false;
+                elements.verifyBtn.innerHTML = 'Verificar Identidade';
+            }
+        });
+
+        elements.updateSessionBtn.addEventListener('click', () => {
+            updateSessionData();
+        });
+
+        elements.clearLogBtn.addEventListener('click', () => {
+            elements.logContainer.innerHTML = '<div class="log-entry info">Log limpo</div>';
+        });
+
+        // Inicialização
+        updateSDKStatus(false);
+    </script>
+</body>
+</html>

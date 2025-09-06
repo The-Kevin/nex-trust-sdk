@@ -1,0 +1,189 @@
+{
+  "thresholds": {
+    "allow": 80,
+    "review": 50,
+    "deny": 0
+  },
+  "rules": [
+    {
+      "id": "fingerprint_completeness",
+      "name": "Fingerprint Completeness",
+      "condition": "fingerprint.userAgent && fingerprint.canvasFingerprint && fingerprint.webglFingerprint",
+      "weight": 20,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica se o fingerprint está completo com dados essenciais"
+    },
+    {
+      "id": "behavioral_activity",
+      "name": "Behavioral Activity",
+      "condition": "behavioral && behavioral.totalEvents > 5",
+      "weight": 15,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica se há atividade comportamental suficiente"
+    },
+    {
+      "id": "session_duration",
+      "name": "Session Duration",
+      "condition": "behavioral && behavioral.duration > 30000",
+      "weight": 10,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica se a sessão tem duração mínima de 30 segundos"
+    },
+    {
+      "id": "suspicious_user_agent",
+      "name": "Suspicious User Agent",
+      "condition": "fingerprint.userAgent.includes('bot') || fingerprint.userAgent.includes('crawler') || fingerprint.userAgent.includes('spider')",
+      "weight": -30,
+      "action": "deny",
+      "enabled": true,
+      "description": "Detecta user agents suspeitos de bots"
+    },
+    {
+      "id": "missing_fingerprint",
+      "name": "Missing Fingerprint",
+      "condition": "!fingerprint || !fingerprint.userAgent",
+      "weight": -50,
+      "action": "deny",
+      "enabled": true,
+      "description": "Detecta ausência de fingerprint básico"
+    },
+    {
+      "id": "facial_verification",
+      "name": "Facial Verification",
+      "condition": "facial && facial.imageData && !facial.error",
+      "weight": 25,
+      "action": "allow",
+      "enabled": true,
+      "description": "Bonus por verificação facial bem-sucedida"
+    },
+    {
+      "id": "high_behavioral_frequency",
+      "name": "High Behavioral Frequency",
+      "condition": "behavioral && behavioral.metrics.clickFrequency > 0.5",
+      "weight": -10,
+      "action": "review",
+      "enabled": true,
+      "description": "Detecta atividade comportamental anormalmente alta"
+    },
+    {
+      "id": "canvas_fingerprint_consistency",
+      "name": "Canvas Fingerprint Consistency",
+      "condition": "fingerprint.canvasFingerprint && fingerprint.canvasFingerprint.length > 100",
+      "weight": 10,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica consistência do canvas fingerprint"
+    },
+    {
+      "id": "webgl_support",
+      "name": "WebGL Support",
+      "condition": "fingerprint.webglFingerprint && fingerprint.webglFingerprint !== 'webgl_not_supported'",
+      "weight": 5,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica suporte ao WebGL"
+    },
+    {
+      "id": "audio_fingerprint",
+      "name": "Audio Fingerprint",
+      "condition": "fingerprint.audioFingerprint && fingerprint.audioFingerprint !== 'audio_error'",
+      "weight": 5,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica disponibilidade do fingerprint de áudio"
+    },
+    {
+      "id": "font_detection",
+      "name": "Font Detection",
+      "condition": "fingerprint.fonts && fingerprint.fonts.length > 5",
+      "weight": 5,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica detecção de fontes do sistema"
+    },
+    {
+      "id": "screen_resolution",
+      "name": "Screen Resolution",
+      "condition": "fingerprint.screenResolution && fingerprint.screenResolution !== '0x0'",
+      "weight": 5,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica resolução de tela válida"
+    },
+    {
+      "id": "timezone_consistency",
+      "name": "Timezone Consistency",
+      "condition": "fingerprint.timezone && fingerprint.timezone.length > 0",
+      "weight": 3,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica presença de timezone"
+    },
+    {
+      "id": "language_detection",
+      "name": "Language Detection",
+      "condition": "fingerprint.language && fingerprint.language.length > 0",
+      "weight": 3,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica detecção de idioma"
+    },
+    {
+      "id": "platform_detection",
+      "name": "Platform Detection",
+      "condition": "fingerprint.platform && fingerprint.platform.length > 0",
+      "weight": 3,
+      "action": "allow",
+      "enabled": true,
+      "description": "Verifica detecção de plataforma"
+    },
+    {
+      "id": "keystroke_frequency_check",
+      "name": "Keystroke Frequency Check",
+      "condition": "behavioral && behavioral.metrics.keystrokeFrequency > 10",
+      "weight": -15,
+      "action": "deny",
+      "enabled": true,
+      "description": "Detecta frequência anormal de keystrokes (possível bot)"
+    },
+    {
+      "id": "mouse_movement_check",
+      "name": "Mouse Movement Check",
+      "condition": "behavioral && behavioral.metrics.mouseMovementDistance < 10",
+      "weight": -10,
+      "action": "review",
+      "enabled": true,
+      "description": "Detecta pouco movimento do mouse"
+    },
+    {
+      "id": "form_interaction",
+      "name": "Form Interaction",
+      "condition": "behavioral && behavioral.metrics.formInteractionCount > 0",
+      "weight": 8,
+      "action": "allow",
+      "enabled": true,
+      "description": "Bonus por interação com formulários"
+    },
+    {
+      "id": "focus_blur_events",
+      "name": "Focus/Blur Events",
+      "condition": "behavioral && behavioral.metrics.focusBlurCount > 0",
+      "weight": 5,
+      "action": "allow",
+      "enabled": true,
+      "description": "Bonus por eventos de foco/blur (interação natural)"
+    },
+    {
+      "id": "session_age_check",
+      "name": "Session Age Check",
+      "condition": "behavioral && behavioral.duration > 120000",
+      "weight": 8,
+      "action": "allow",
+      "enabled": true,
+      "description": "Bonus por sessão com duração adequada (>2 minutos)"
+    }
+  ]
+}

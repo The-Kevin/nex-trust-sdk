@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # NextTrust SDK Backend
+  nextrust-api:
+    build: .
+    container_name: nextrust-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_TRUST_API_KEY=${NEXT_TRUST_API_KEY:-default-api-key}
+      - ENABLE_CORS=true
+      - CORS_ORIGIN=*
+      - ENABLE_RATE_LIMIT=true
+      - RATE_LIMIT_WINDOW=15
+      - RATE_LIMIT_MAX=100
+      - RULES_PATH=./config/rules.json
+      - SDK_VERSION=1.0.0
+      - LOG_LEVEL=info
+    volumes:
+      - ./config:/app/config:ro
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - nextrust-network
+
+  # Nginx Reverse Proxy (opcional)
+  nginx:
+    image: nginx:alpine
+    container_name: nextrust-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - nextrust-api
+    restart: unless-stopped
+    networks:
+      - nextrust-network
+
+  # Redis para cache (opcional)
+  redis:
+    image: redis:7-alpine
+    container_name: nextrust-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - nextrust-network
+    command: redis-server --appendonly yes
+
+  # PostgreSQL para persistência (opcional)
+  postgres:
+    image: postgres:15-alpine
+    container_name: nextrust-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=nextrust
+      - POSTGRES_USER=nextrust
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-nextrust123}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - nextrust-network
+
+networks:
+  nextrust-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
