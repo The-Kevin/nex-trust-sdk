@@ -1,4 +1,6 @@
 # NextTrust SDK
+# Feito por Kevin Almeida RM557422
+#RM557422@fiap.com.br
 
 SDK leve para verificação de identidade e análise de confiança, com coleta passiva de fingerprint do dispositivo e eventos comportamentais.
 
