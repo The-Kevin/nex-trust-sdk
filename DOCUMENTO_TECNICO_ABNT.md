@@ -7,9 +7,11 @@
 **AUTOR:** Kevin Almeida  
 **REGISTRO ACADÊMICO:** RM557422  
 **E-MAIL:** RM557422@fiap.com.br  
-**INSTITUIÇÃO:** Faculdade de Informática e Administração Paulista (FIAP)  
+**INSTITUIÇÃO:** Faculdade de Informática e Administração Paulista (FIAP) 
 **DATA:** Dezembro de 2024  
 **VERSÃO:** 1.0.0
+GITHUB: https://github.com/The-Kevin/nex-trust-sdk
+**Video Youtube** https://https://youtu.be/jyDiQBn73nY
 
 ---
 
